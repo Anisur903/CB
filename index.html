@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character CBT Pad</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3em;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #3498db;  /* Changed heading color */
+            margin-bottom: 20px;
+        }
+
+        .score-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .score-section div {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50; /* Updated text color */
+        }
+
+        .characters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .character-button {
+            padding: 15px;
+            font-size: 1.1em;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .character-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .anis { background-color: #4CAF50; }
+        .klaus { background-color: #2196F3; }
+        .goggins { background-color: #FFC107; }
+        .superman { background-color: #F44336; }
+        .apostate { background-color: #FF5722; }
+        .deadman { background-color: #9C27B0; }
+        .rabbit { background-color: #673AB7; }
+        .hunk { background-color: #FF9800; }
+        .socratic { background-color: #3F51B5; }
+
+        .thought-inputs {
+            margin-top: 30px;
+        }
+
+        .thought-inputs textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            resize: vertical;
+            transition: background-color 0.3s ease;
+        }
+
+        .thought-inputs textarea:focus {
+            background-color: #e7f7e7;
+        }
+
+        .thought-inputs button {
+            padding: 14px 22px;
+            font-size: 1.2em;
+            font-family: 'Roboto', sans-serif; /* Changed font family */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: 600; /* Increased font weight for emphasis */
+        }
+
+        .thought-inputs button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .graph-container {
+            margin-top: 40px;
+        }
+
+        #characterGraph {
+            width: 100%;
+            height: 400px;
+        }
+
+        .history-section {
+            margin-top: 30px;
+            font-size: 1.1em;
+        }
+
+        .history-entry {
+            background-color: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em;
+        }
+
+        .entry-time {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .entry-content {
+            margin-top: 5px;
+            font-size: 1em;
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .characters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .characters {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title">Character CBT Pad</div>
+        
+        <!-- Score Section -->
+        <div class="score-section">
+            <div>Current Score: <span id="currentScore">0</span></div>
+        </div>
+
+        <!-- Character Buttons -->
+        <div class="characters">
+            <button class="character-button anis" onclick="recordCharacter('Anis')">Anis</button>
+            <button class="character-button klaus" onclick="recordCharacter('Klaus')">Klaus</button>
+            <button class="character-button goggins" onclick="recordCharacter('Goggins')">Goggins</button>
+            <button class="character-button superman" onclick="recordCharacter('Superman')">Superman</button>
+            <button class="character-button apostate" onclick="recordCharacter('Apostate')">Apostate</button>
+            <button class="character-button deadman" onclick="recordCharacter('Deadman')">Deadman</button>
+            <button class="character-button rabbit" onclick="recordCharacter('Rabbit')">Rabbit</button>
+            <button class="character-button hunk" onclick="recordCharacter('Hunk')">Hunk</button>
+            <button class="character-button socratic" onclick="recordCharacter('Socratic')">Socratic</button>
+        </div>
+
+        <!-- Thought Inputs -->
+        <div class="thought-inputs">
+            <textarea id="negativeThoughts" placeholder="Enter negative thoughts"></textarea>
+            <textarea id="alternateThoughts" placeholder="Enter alternate thoughts"></textarea>
+            <button class="character-button" onclick="submitCBT()">Submit Thoughts</button>
+        </div>
+
+        <!-- Graph Section -->
+        <div class="graph-container">
+            <canvas id="characterGraph"></canvas>
+        </div>
+
+        <!-- History Section (Below Graph) -->
+        <div class="history-section">
+            <div id="historyContent"></div>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        let chart = null;
+        let history = [];
+        let scoreHistory = [];
+        let labelsHistory = [];
+        let totalScore = 0;
+
+        // Record the selected character and update the score
+        function recordCharacter(character) {
+            const characterScores = {
+                'Anis': 5,
+                'Klaus': 6,
+                'Goggins': 8,
+                'Superman': -4,
+                'Apostate': -4,
+                'Deadman': -5,
+                'Rabbit': -5,
+                'Hunk': -3,
+                'Socratic': -5
+            };
+
+            totalScore += characterScores[character];
+            document.getElementById('currentScore').innerText = totalScore;
+
+            labelsHistory.push(new Date().toLocaleTimeString());
+            scoreHistory.push(totalScore);
+
+            updateGraph();
+
+            logHistory(character);
+        }
+
+        // Log history of selected characters and thoughts
+        function submitCBT() {
+            let negative = document.getElementById('negativeThoughts').value;
+            let alternate = document.getElementById('alternateThoughts').value;
+
+            history.push({
+                time: new Date().toLocaleString(),
+                negative: negative,
+                alternate: alternate
+            });
+
+            document.getElementById('negativeThoughts').value = '';
+            document.getElementById('alternateThoughts').value = '';
+
+            updateHistory();
+        }
+
+        // Update history display
+        function updateHistory() {
+            let historyContent = document.getElementById('historyContent');
+            historyContent.innerHTML = '';
+            history.forEach(entry => {
+                let entryDiv = document.createElement('div');
+                entryDiv.className = 'history-entry';
+                entryDiv.innerHTML = `
+                    <div class="entry-time">${entry.time}</div>
+                    <div class="entry-content">Negative: <span>${entry.negative}</span></div>
+                    <div class="entry-content">Alternate: <span>${entry.alternate}</span></div>`;
+                historyContent.appendChild(entryDiv);
+            });
+        }
+
+        // Update the line graph dynamically
+        function updateGraph() {
+            if (!chart) {
+                let ctx = document.getElementById('characterGraph').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labelsHistory,
+                        datasets: [{
+                            label: 'Character Behavior Over Time',
+                            data: scoreHistory,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: -20,
+                                max: 20,
+                            }
+                        }
+                    }
+                });
+            } else {
+                chart.data.labels = labelsHistory;
+                chart.data.datasets[0].data = scoreHistory;
+                chart.update();
+            }
+        }
+    </script>
+</body>
+</html>
